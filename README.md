@@ -1,1 +1,2 @@
-# Kahuna_HS_PowerShell
+# Kahuna_PowerShell_HS
+#MSSA practice project
