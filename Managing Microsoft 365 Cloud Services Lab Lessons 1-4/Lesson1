@@ -17,10 +17,24 @@ New-MgGroup -DisplayName "IT Team" -MailNickname "ITTeam" -GroupTypes "Unified" 
 #Add a user to a group:
 Add-MgGroupMember -GroupId "<GroupId>" -DirectoryObjectId "<UserId>"
 
+Connect-AzureAD
+
 #Create a user with AzureAD
 $UserPassword=New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
 $UserPassword.Password="P@ssw0rd"
 New-AzureADUser -DisplayName "John Doe" -GivenName "John" -Surname "Doe" -UserPrincipalName JohnD@adatum.com -UsageLocation US -PasswordProfile $UserPassword -AccountEnabled $true
+
+#Add user to role with MSOL
+Connect-MsolService
+Add-MsolRoleMember -RoleName "Company Administrator" -RoleMemberEmailAddress "johndoe@adatum.com"
+
+#Add user and assign license
+New-AzureADUser -DisplayName "John Doe" -UserPrincipalName "jdoe@adatum.com" -PasswordProfile $UserPassword -AccountEnabled $true
+Set-AzureADUserLicense -ObjectId "UserObjectId" -AssignedLicenses $License
+Get-AzureADSubscribedSku | Select-Object SkuPartNumber, SkuId | Format-Table
+
+#Add user to group with AzureAD
+Add-AzureADGroupMember -ObjectId "GroupObjectId" -RefObjectId "UserObjectId"
 
 #Other AzureAD commands for managing users
 Get-AzureADUser

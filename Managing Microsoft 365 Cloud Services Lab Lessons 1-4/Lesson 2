@@ -31,3 +31,49 @@ New-TransportRule -Name "Block External Emails" -SentToScope "NotInOrganization"
 #List all mailboxes:
 Get-Mailbox
 
+
+#Create a group by using the AzureAD module:
+New-AzureADGroup -DisplayName "IT Team" -MailEnabled $true -MailNickname "ITTeam" -SecurityEnabled $false
+
+Connect-AzureAD
+Get-AzureADGroup
+Set-AzureADGroup -ObjectId "GroupObjectId" -DisplayName "NewDisplayName"
+Set-AzureADGroup -ObjectId "GroupObjectId" -MailEnabled $true
+Set-AzureADGroup -ObjectId "GroupObjectId" -MailNickname "NewMailNickname"
+Remove-AzureADGroup -ObjectId "GroupObjectId"
+Get-AzureADGroupMember -ObjectId "GroupObjectId"
+Add-AzureADGroupMember -ObjectId "GroupObjectId" -RefObjectId "UserObjectId"
+Remove-AzureADGroupMember -ObjectId "GroupObjectId" -MemberId "UserObjectId"
+Get-AzureADGroupOwner -ObjectId "GroupObjectId"
+Add-AzureADGroupOwner -ObjectId "GroupObjectId" -RefObjectId "UserObjectId"
+
+#Lesson 3: Manage SharePoint Online
+#Connect to SharePoint Online:
+Connect-SPOService -Url https://yourtenant-admin.sharepoint.com
+
+#List all SharePoint sites:
+Get-SPOSite
+
+#Create a new site collection:
+New-SPOSite -Url https://yourtenant.sharepoint.com/sites/ITSite -Owner admin@yourdomain.com -StorageQuota 1024
+
+#Manage site permissions:
+#Grant permissions to a user
+Set-SPOUser -Site https://yourtenant.sharepoint.com/sites/ITSite -LoginName "johndoe@yourdomain.com" -IsSiteCollectionAdmin $true
+
+#Lesson 4: Manage Microsoft Teams
+#Connect to Microsoft Teams
+Connect-MicrosoftTeams
+
+#List all Teams in your organization:
+Get-Team
+
+#Create a new Team:
+New-Team -DisplayName "IT Team" -Description "Team for IT Department" -MailNickname "ITTeam"
+
+#Add members to a Team:
+Add-TeamUser -GroupId "<TeamId>" -User "johndoe@yourdomain.com"
+
+#Manage Team settings:
+#Update Team settings:
+Set-Team -GroupId "<TeamId>" -AllowGuestCreateUpdateChannels $true
