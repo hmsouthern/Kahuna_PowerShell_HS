@@ -1,0 +1,51 @@
+#Connect to Microsoft 365 Services:
+Connect-MgGraph -Scopes "User.ReadWrite.All", "Group.ReadWrite.All"
+
+#List all Microsoft 365 users:
+Get-MgUser -All
+
+#Create a new user:
+New-MgUser -DisplayName "John Doe" -UserPrincipalName "johndoe@yourdomain.com" -MailNickname "johndoe" -AccountEnabled $true -PasswordProfile @{Password="P@ssw0rd"; ForceChangePasswordNextSignIn=$true}
+
+#Assign a license to a user:
+Set-MgUserLicense -UserId "<UserId>" -AddLicenses @{SkuId="<LicenseSkuId>"}
+
+#Manage groups:
+#Create a group:
+New-MgGroup -DisplayName "IT Team" -MailNickname "ITTeam" -GroupTypes "Unified" -SecurityEnabled $false -MailEnabled $true
+
+#Add a user to a group:
+Add-MgGroupMember -GroupId "<GroupId>" -DirectoryObjectId "<UserId>"
+
+#Create a user with AzureAD
+$UserPassword=New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
+$UserPassword.Password="P@ssw0rd"
+New-AzureADUser -DisplayName "John Doe" -GivenName "John" -Surname "Doe" -UserPrincipalName JohnD@adatum.com -UsageLocation US -PasswordProfile $UserPassword -AccountEnabled $true
+
+#Other AzureAD commands for managing users
+Get-AzureADUser
+Get-AzureADUser -ObjectId "UserObjectId"    
+
+Set-azureADUser -ObjectId "UserObjectId" -PasswordPolicies DisablePasswordExpiration
+Set-AzureADUser -ObjectId "UserObjectId" -PasswordProfile $UserPassword
+Set-AzureADUser -ObjectId "UserObjectId" -UserType Member
+Set-AzureADUser -ObjectId "UserObjectId" -UsageLocation US  
+Set-AzureADUser -ObjectId "UserObjectId" -AccountEnabled $true
+Set-AzureADUser -ObjectId "UserObjectId" -MailNickName "JohnDoe"
+Set-AzureADUser -ObjectId "UserObjectId" -Department "IT"
+Set-AzureADUser -ObjectId "UserObjectId" -JobTitle "IT Administrator"
+Set-AzureADUser -ObjectId "UserObjectId" -Mobile "1234567890"
+Set-AzureADUser -ObjectId "UserObjectId" -Office "London"
+Set-AzureADUser -ObjectId "UserObjectId" -City "London"
+Set-AzureADUser -ObjectId "UserObjectId" -Country "UK"
+Set-AzureADUser -ObjectId "UserObjectId" -StreetAddress "1234 Main St"
+Set-AzureADUser -ObjectId "UserObjectId" -PostalCode "12345"
+
+remove-azureADUser -ObjectId "UserObjectId"
+
+Get-AzureADUser -ObjectId "UserObjectId" | Remove-AzureADUser
+
+Get-AzureADRMSDeletedDirectoryObject
+Get-AzureADUser
+Get-AzureADUser -ObjectId "UserObjectId"
+

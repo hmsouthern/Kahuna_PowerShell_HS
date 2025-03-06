@@ -1,0 +1,33 @@
+#Connect to Exchange Online:
+Connect-ExchangeOnline
+
+#List all mailboxes:
+Get-Mailbox
+
+#Create a new mailbox:
+New-Mailbox -Name "John Doe" -UserPrincipalName "johndoe" -Alias "johndoe" -FirstName "John" -LastName "Doe" 
+
+#Set mailbox size quota:
+Set-Mailbox -Identity "johndoe@yourdomain.com" -ProhibitSendQuota 50GB
+
+#Manage distribution groups:
+#List distribution groups:
+Get-DistributionGroup
+
+#Add members to a distribution group
+Add-DistributionGroupMember -Identity "ITAdmins" -Member "johndoe@yourdomain.com"
+
+#Create a new distribution group:
+New-DistributionGroup -Name "ITAdmins" -Alias "ITAdmins" -PrimarySmtpAddress "itadmins@yourdomain.com"
+
+#Manage mail flow:
+#List mail flow rules:      
+Get-TransportRule
+
+#Create a new mail flow rule:
+New-TransportRule -Name "Block External Emails" -SentToScope "NotInOrganization" -RejectMessageEnhancedStatusCode "5.7.1" -RejectMessageReasonText "External emails are not allowed."
+
+#Manage mailboxes:
+#List all mailboxes:
+Get-Mailbox
+

@@ -1,0 +1,16 @@
+#Lesson 4: Manage Microsoft Teams
+#Connect to Microsoft Teams
+Connect-MicrosoftTeams
+
+#List all Teams in your organization:
+Get-Team
+
+#Create a new Team:
+New-Team -DisplayName "IT Team" -Description "Team for IT Department" -MailNickname "ITTeam"
+
+#Add members to a Team:
+Add-TeamUser -GroupId "<TeamId>" -User "johndoe@yourdomain.com"
+
+#Manage Team settings:
+#Update Team settings:
+Set-Team -GroupId "<TeamId>" -AllowGuestCreateUpdateChannels $true
