@@ -1,0 +1,106 @@
+﻿#  DAY 5: Get-Process_Script_v1.1.2.ps1
+#  Version 1.1.2 (10.8.2021)/BK
+ 
+#  -IMPORTANT:  THERE IS A 'LOT' TO LEARN TO GET PROFICIENT WITH POWERSHELL. 
+#  -RESPECTFULLY, IF YOU ARE NEW, INEXPERIENCED OR HAVE "POCKETS OF KNOWLEDGE" WITH POWERSHELL, WHAT YOU LEARN IN THIS CLASS IS 10% OF POWERSHELL'S ABILITIES; AKA, YOU ARE DANGEROUS.
+#  -ONLY DO THESE COMMANDS IN A CONTROLLED LAB ENVIRONMENT, SUCH AS THE CLASSROOM LABS WE USED; NOT IN A PRODUCTION (BUSINESS OR PERSONAL) SYSTEM
+#   UNTIL YOU ARE THUROUGHLY COMFORTABLE WITH ALL FACITS OF THE COMMANDS, PARAMETERS, PIPES, ETC., THAT YOU ARE USING!!
+#  -ENJOY, HAVE FUN AND EXPAND YOUR SKILLS IN POWERSHELL!
+
+# VERSION HISTORY
+<#
+    CURRENT
+        Get-Process_Script_v1.1.ps1:
+            1. *Put SelectProcesses.txt in central location
+            2. *Valdation that file was written and display the location.
+            3. *Unique file each time with computername, type of export, and date/time stamp.
+
+        Get-Process_Script_v1.0.ps1: 
+            1. *Get ALL information on select processes (Notepad, Charmap, IE 11).
+            2. *Export to a .CSV.
+            3. *Import from a list of processes names to use out select process details.
+
+    FUTURE CHANGES
+
+       Get-Process_Script_v1.2.ps1: 
+            1. Per-Process Determination of Criteria for Export
+            2. Use Registry for validation
+            3. Setup for Scheduled Task Use
+            4. Verify drive path for import and export
+
+
+       Get-Process_Script_v2.0.ps1:
+            1. Export ALL Processes
+            2. (Optional) One Script with menu choices for All Or Select Processes
+#>
+
+# DECLARED VARIABLES
+
+$GetDate = Get-Date
+$LPath = 'C:\ClassFiles-BK'
+$IPath = 'Import'
+$EPath = 'Export'
+#$NPath = '\\LON-DC1\PS$'
+$NPath = '\\Win2019-DC1\PS$'
+$LCompName = $env:COMPUTERNAME
+$SelProc = 'GetSelectProc_ALL'
+$AllProc = 'GetALLProc_ALL'
+#*$SelectProcList = 'SelectProcesses.txt'
+$SelectProcList = 'SelectProcessConditionFile.csv'
+$DateFile = Get-Date -UFormat %Y%m%d_%H%M%S
+$GetAllProcesses = Get-Process
+#*$SelectProcessList = Get-Content -Path $NPath"\"$IPath"\"$SelectProcList 
+#*$SelectProcessList = Get-Content -Path ("$NPath"+'\'+"$IPath"+'\'+"$SelectProcList")
+$SelectProcessList = Import-Csv -Path ("$NPath"+'\'+"$IPath"+'\'+"$SelectProcList")
+
+Clear
+
+# MAIN BODY
+
+foreach ($SelectProcessListItem in $SelectProcessList.ProcessName){
+    Write-Host $SelectProcessListItem -ForegroundColor Yellow -BackgroundColor Black
+    foreach ($GetAllProcessesItem in $GetAllProcesses){
+        #Write-Host $GetAllProcessesItem -ForegroundColor Red -BackgroundColor Black
+        #if($SelectProcessListItem.ProcessName -eq $GetAllProcessesItem.ProcessName  ){
+        if($SelectProcessListItem -eq $GetAllProcessesItem.ProcessName  ){
+            $SelProcListItmDetails = $SelectProcessList | Where-Object {$_.Processname -eq $SelectProcessListItem}
+            #Write-Host $GetAllProcessesItem -ForegroundColor Red -BackgroundColor Yellow
+            #Start-Sleep -Milliseconds 200
+            #*$GetAllProcessesItem | Select-Object -Property * | Export-Csv -Path $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV" -NoTypeInformation -Append #-WhatIf
+            #*$GetAllProcessesItem | Select-Object -Property * | Where-Object {$_.id $SelectProcessList.idcriteria 3000  }  #Export-Csv -Path $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV" -NoTypeInformation -Append #-WhatIf
+            $TempSelectproclistitem = $SelProcListItmDetails.id
+            $tempproclistitem = $GetAllProcessesItem.Id
+            $tempoperator = $SelProcListItmDetails.idcriteria
+            $InEx = Invoke-Expression "$tempproclistitem $tempoperator $TempSelectproclistitem"#;$tempproclistitem, $tempoperator, $TempSelectproclistitem
+            if ($inex -eq $true) {
+                Write-Host $InEx,$tempproclistitem, $tempoperator, $TempSelectproclistitem -ForegroundColor Yellow -BackgroundColor Black
+                $GetAllProcessesItem | Select-Object -Property * | Export-Csv -Path $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV" -NoTypeInformation -Append #-WhatIf
+                } 
+            else{ Write-Host $InEx,$tempproclistitem, $tempoperator, $TempSelectproclistitem -ForegroundColor Red -BackgroundColor Black}
+
+                    
+            #*$GetAllProcessesItem | Select-Object -Property * | Where-Object {$_.id   $SelProcListItmDetails.id }  #Export-Csv -Path $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV" -NoTypeInformation -Append #-WhatIf
+            #*$GetAllProcessesItem | Select-Object -Property * | Where-Object {$_.id -ge 3000  }  #Export-Csv -Path $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV" -NoTypeInformation -Append #-WhatIf
+
+
+            #Pause
+            } # If $SelectProcessListItem matches $GetAllProcessesItem
+        #Start-Sleep -Milliseconds 200 
+        } #Sub foreach $GetAllProcessesItem 
+    #Start-Sleep -Milliseconds 200
+    } #Primary foreach ($SelectProcessListItem)
+
+                $TestPath = Test-Path -Path $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV" -PathType Leaf
+            if($TestPath -eq $true  ){
+                Write-Host "
+
+        " -NoNewline 
+                Write-Host "The file was saved to " -ForegroundColor Red -BackgroundColor Black -NoNewline
+                Write-Host $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV"  -ForegroundColor Yellow -BackgroundColor Black -NoNewline
+                Write-Host "
+
+                "
+                Start-Sleep -Seconds 3
+                }
+
+# END OF SCRIPT

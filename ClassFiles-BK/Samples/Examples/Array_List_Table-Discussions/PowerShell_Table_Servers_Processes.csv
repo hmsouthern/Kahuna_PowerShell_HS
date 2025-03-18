@@ -1,0 +1,4 @@
+﻿SERVER,PROCESS-1,PROCESS-2,PROCESS-3,PROCESS-4,PROCESS-5,PROCESS-6,PROCESS-7,PROCESS-8,PROCESS-9,PROCESS-10
+LON-DC1,notepad,mspaint,charmap,,,,,,,
+LON-SVR1,notepad,mspaint,charmap,wordpad,,,,,,
+LON-CL1,notepad,charmap,wordpad,,,,,,,

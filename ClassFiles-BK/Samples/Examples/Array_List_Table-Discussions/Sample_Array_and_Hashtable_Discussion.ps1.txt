@@ -1,0 +1,82 @@
+﻿
+#Array list example (Single item per row)
+    #Use Foreach to process thru the list
+$Folders = 'DayLabs','Export','Import','Samples'
+$Folders| Out-File -FilePath C:\Class_Files-BK\Export\Day-1_Folders.txt
+$GetFolderList = Get-Content -Path C:\Class_Files-BK\Export\Day-1_Folders.txt
+
+#Array Table example (Columns and Rows)
+    #Use Foreach to process thru the table of information
+$GetProc = Get-Process
+$GetProc | Export-Csv -Path C:\Class_Files-BK\Export\GetProc_AllProc_AllProp.csv -NoTypeInformation #-WhatIf
+$getProcCSV = Import-Csv -Path C:\Class_Files-BK\Export\GetProc_AllProc_AllProp.csv
+
+
+#Hashtable Examples (Key and Values; Values can hold [array] item, list, or tables of information) 
+#https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_hash_tables
+$hash = @{}
+$hash = @{ Number = 1; Shape = "Square"; Color = "Blue"}
+
+
+$hash.Keys
+$hash.Values
+
+$hash.Keys
+$hash.Color
+
+$hash["Time"] = "Now"
+
+$p = @{"PowerShell" = (Get-Process PowerShell);
+"Notepad" = (Get-Process notepad)}
+#
+$p
+$p.Notepad
+$p.Notepad.processname
+$p.Notepad.processname
+
+$p.Add('ALL',(Get-Process)  )
+$p.Remove('all')
+
+$p.ALL
+$p.ALL.processname
+$q = Get-Process # Array Table
+$Folders = 'DayLabs','Export','Import','Samples' #Array list
+$ProcList = Get-Content -Path C:\Class_Files-BK\Import\SelectProcList.txt
+$Servers = 'LON-DC1','LON-SVR1','LON-CL1' #Array list
+
+
+$hash1 = @{} # Framework of a hashtable
+$hash1.Add('ALL',$q)
+$hash1.ALL
+$hash1.Add('Folders',$Folders)
+$hash1.Remove('folders')
+$hash1
+$hash1.Folders
+$hash1.Add('Servers',$Servers)
+$hash1
+$hash1.Servers
+$hash1.Add('ProcessList',$ProcList)
+$hash1
+$hash1.ProcessList
+$hash1 | Out-GridView
+$hash1 | Export-Csv -Path C:\Class_Files-BK\Export\Hash1_Export.csv 
+$hash1 | Export-Csv -Path C:\Class_Files-BK\Export\Hash1_Export-1.csv -NoTypeInformation
+
+
+
+$hash1.Servers
+$hash1.Folders
+$hash1.ALL
+$hash1.ALL | Select-Object -Property *
+$GetProc | Where-Object {$_.ProcessName -eq $ProcListitem} | Export-Csv -Path C:\Class_Files-BK\Export\GetProc_SelectProc_AllProp.csv -NoTypeInformation -Append #-WhatIf
+$hash1.ALL | Where-Object {$_.ProcessName -eq 'Notepad'} | Export-Csv -Path C:\Class_Files-BK\Export\GetProc_SelectProc_AllProp.csv -NoTypeInformation -Append #-WhatIf
+
+#Can use Foreach to process thru the Key (Name) and Values
+foreach ( $processlist in $hash1.ProcessList){
+    $hash1.ALL | Where-Object {$_.ProcessName -eq $processlist } | Export-Csv -Path C:\Class_Files-BK\Export\Hash1_SelectProcesses.csv -NoTypeInformation -Append #-WhatIf
+    Write-Host $processlist
+    Start-Sleep -Milliseconds 500
+
+    }
+
+$q.processname

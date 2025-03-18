@@ -1,0 +1,9 @@
+Get-Content versus Import-CSV 
+
+$SourceListData = Get-Content -Path $NetPath"\"$DirScripts"\"$DirData"\"$SourceProcessList #not a table
+$SourceListData = Import-CSV -Path $NetPath"\"$DirScripts"\"$DirData"\"$SourceProcessList #is a table
+$SourceListData
+
+$SourceListData[row].column
+
+
