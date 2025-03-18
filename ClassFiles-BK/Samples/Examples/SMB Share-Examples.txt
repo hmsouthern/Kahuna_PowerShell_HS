@@ -1,0 +1,77 @@
+#$env:COMPUTERNAME
+#$env:USERNAME
+
+#New-Item -Path "c:\" -Name "logfiles" -ItemType Directory
+New-Item -Path "E:\" -Name "PSOutput" -ItemType Directory #-WhatIf
+
+
+<#Get-Volume
+Get-FileShare
+Get-FileShare | FL -Property *
+New-FileShare -Name "PSOUTPUT$" -RelativePathName E:\PSOutput -WhatIf
+New-FileShare -FileServerFriendlyName $env:COMPUTERNAME -SourceVolume E -Name "PSOUTPUT$" -RelativePathName E:\PSOutput -WhatIf
+
+
+New-FileShare -FileServerFriendlyName $env:COMPUTERNAME -SourceVolume E: -Name "PSOUTPUT$" -RelativePathName E:\PSOutput -WhatIf
+#>
+
+
+
+#Get-SmbShare
+New-SmbShare -Name "PSOUTPUT$" -Path E:\PSOutput -FullAccess "adatum\domain admins" -ChangeAccess "adatum\domain computers" #-WhatIf
+
+
+New-SmbShare -Name "Source$" -Path E:\Source -FullAccess "Administrators" -ReadAccess "Everyone" -CachingMode None -FolderEnumerationMode AccessBased -Description 
+
+
+
+New-Item -Path C:\ -Name DATA -ItemType Directory -Force
+New-FileShare -Name DATA -Description "ADATUM CORP DATA" -SourceVolume C:
+New-SmbShare -Name DATA -Description "ADATUM CORP DATA" -FolderEnumerationMode AccessBased -Path C:\DATA -FullAccess "everyone"
+New-SmbShare -Name DATA -Description "ADATUM CORP DATA" -Path C:\DATA -FullAccess "everyone"
+
+
+New-Item -Path 'E:' -ItemType Directory -Name 'Source' #-WhatIf
+New-SmbShare -Name "Source$" -Path E:\Source -FullAccess "Administrators" -ReadAccess "Everyone" -CachingMode None -FolderEnumerationMode AccessBased -Description "Source Folder for PS Scripts" #-WhatIf
+Get-SmbShare
+
+Get-Item -Path 'E:\Source' | Remove-Item #-WhatIf
+Get-SmbShare -Name 'Source$' | Remove-SmbShare -Force
+Remove-SmbShare -Name Source$
+
+Get-Item -Path e:\
+$GetChItemPath=Get-ChildItem -Path e:\ 
+Test-Path -Path e:\source
+Test-Path -Path e:\source -IsValid
+
+
+Test-Path -Path D:\source
+Test-Path -Path D:\source -IsValid
+
+
+Test-Path -Path e:\source
+
+
+
+
+
+clear
+# Create Folder
+if ((Test-Path -Path e:\source) -eq $false) {
+    #write-host "if statement met" -ForegroundColor Red -BackgroundColor Yellow
+    write-host "Creating Source Folder" -ForegroundColor Red -BackgroundColor Yellow
+
+    New-Item -Path 'E:' -ItemType Directory -Name 'Source' #-WhatIf
+    New-Item -Path 'e:\Source' -ItemType Directory -Name 'Scripts' #-WhatIf
+
+    } #if statement
+else {
+    #Write-Host "else statement met" -ForegroundColor Red -BackgroundColor Yellow
+    Write-Host "Folder already exists" -ForegroundColor Red -BackgroundColor Black
+        } #else statement
+Write-Host "after the if statement" -ForegroundColor Red -BackgroundColor Yellow
+
+# Create the Share
+
+New-SmbShare -Name "Source$" -Path E:\Source -FullAccess "Administrators" -ReadAccess "Everyone" -CachingMode None -FolderEnumerationMode AccessBased -Description "Source Folder for PS Scripts" #-WhatIf
+#Get-SmbShare

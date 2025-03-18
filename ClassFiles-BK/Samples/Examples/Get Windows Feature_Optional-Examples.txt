@@ -1,0 +1,6 @@
+Get-WindowsFeature -ComputerName lon-svr1 # for server OS ONLY
+Get-WindowsFeature -ComputerName lon-svr1, lon-dc1
+
+Get-WindowsCapability -Online - # for client & server OS ONLY
+Get-WindowsCapability -Name * -Online # for client & server OS ONLY
+Get-WindowsOptionalFeature -Online # for client & server OS ONLY

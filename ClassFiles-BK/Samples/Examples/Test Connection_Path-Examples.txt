@@ -1,0 +1,37 @@
+
+Test-Connection -ComputerName LON-SVR1
+Test-NetConnection -ComputerName win2019-dc1 -Port 445
+Test-NetConnection -ComputerName win2019-dc1 -DiagnoseRouting -InformationLevel Detailed
+Test-NetConnection -ComputerName win2019-dc1 -TraceRoute -InformationLevel Detailed
+Test-NetConnection -ComputerName win2019-dc1 -CommonTCPPort SMB 
+Test-NetConnection -ComputerName win2019-dc1 -CommonTCPPort SMB -InformationLevel Detailed
+Test-NetConnection -ComputerName win2019-dc1 -CommonTCPPort SMB | Select-Object -Property *
+Test-NetConnection -ComputerName win2019-dc1 -CommonTCPPort SMB -InformationLevel Quiet
+
+Test-NetConnection -ComputerName win2019-dc1 -CommonTCPPort WINRM
+Test-NetConnection -ComputerName win2019-dc1 -CommonTCPPort RDP
+
+Test-ComputerSecureChannel 
+
+
+Test-Path -Path C:\ClassFiles-BK\import\SelectProcesses.txt -PathType Leaf
+Test-Path -Path C:\ClassFiles-BK\import\SelectProcesses.txt -IsValid
+
+Test-Path -Path HKLM:\SOFTWARE\Class\ -PathType Leaf
+
+
+
+ $TestPath = Test-Path -Path $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV" -PathType Leaf
+ if($TestPath -eq $true  ){
+ Write-Host "
+
+        " -NoNewline 
+ Write-Host "The file was saved to " -ForegroundColor Red -BackgroundColor Black -NoNewline
+Write-Host $LPath"\"$EPath"\"$DateFile"-"$LCompName"-"$SelProc".CSV"  -ForegroundColor Yellow -BackgroundColor Black -NoNewline
+Write-Host "
+
+                "
+ Start-Sleep -Seconds 3
+ }
+
+
