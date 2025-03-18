@@ -1,0 +1,13 @@
+
+
+$CaptureTime=Get-Date -UFormat "%Y%m%d_%I%M%S";$CaptureTime
+# Get-Date -Format " MM-dd-yyyy HH:mm:ss:fff" #this allows up to 1000's of a second
+# Get-Date -Format " MM-dd-yyyy HH:mm:ss:f" this allows up to 10's of a second
+
+
+
+Get-Date
+Get-Date -Format "dddd MM/dd/yyyy HH:mm K"
+Get-Date -UFormat "%A %m/%d/%Y %R %Z"
+Get-Date -UFormat "%A%m%d%Y%R%Z"
+Get-Date -UFormat "%m%d%Y%R%Z"

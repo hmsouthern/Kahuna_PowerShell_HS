@@ -63,3 +63,4 @@ Get-AzureADRMSDeletedDirectoryObject
 Get-AzureADUser
 Get-AzureADUser -ObjectId "UserObjectId"
 
+#enable role using AzureAD

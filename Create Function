@@ -1,3 +1,11 @@
-#write this output
-
-Function Get-Corp
+function Get-Greeting {
+    param (
+        [string]$Name
+    )
+    
+    if ($Name) {
+        return "Hello, $Name!"
+    } else {
+        return "Hello, World!"
+    }
+}
