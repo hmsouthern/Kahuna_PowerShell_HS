@@ -1,0 +1,15 @@
+
+
+
+# WMI/CIMv2 conversation
+Get-WmiObject -List
+Get-WmiObject -List | Select-Object -Property * |Export-Csv -Path C:\ClassFiles\WMI_Class_List.CSV 
+Get-WmiObject -list -Class *operating*
+Get-WmiObject -Class Win32_OperatingSystem
+Get-WmiObject -Class Win32_OperatingSystem | Select-Object -Property *
+Get-WmiObject -ComputerName LON-SVR1 -Class Win32_OperatingSystem | Select-Object -Property *
+
+Get-WmiObject -Class Win32_OperatingSystem | Select-Object -Property * | Out-GridView
+Get-WmiObject -ComputerName LON-SVR1 -Class Win32_OperatingSystem | Select-Object -Property * | Out-GridView
+Get-WmiObject -ComputerName LON-SVR1,LON-CL1 -Class Win32_OperatingSystem | Select-Object -Property * | Out-GridView
+Get-WmiObject -ComputerName LON-SVR1,localhost -Class Win32_OperatingSystem | Select-Object -Property * | Out-GridView

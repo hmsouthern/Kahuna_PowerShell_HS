@@ -1,0 +1,93 @@
+
+# discussion on 'if/elseif/else'
+if (condition){doing part}
+
+
+if (condition){doing part} #
+elseif (condition){doing part} #
+
+#2
+if (condition){doing part}
+elseif (condition){doing part}
+elseif (condition){doing part}
+elseif (condition){doing part}
+else {doing part}
+
+
+#3
+if (condition){
+	if (condition){doing part} #
+	elseif (condition){
+		if (condition){doing part} #
+		elseif (condition){doing part} #
+		doing part
+		} #
+	doing part
+	}
+elseif (condition){doing part}
+elseif (condition){doing part}
+elseif (condition){doing part}
+else {doing part}
+
+
+#4
+if (condition){
+	if (condition){doing part} #
+	elseif (condition){
+		if (condition){
+			foreach ($<item> in $<collection>){<statement list>}			
+			doing part
+			} #
+		elseif (condition){doing part} #
+		doing part
+		} #
+	doing part
+	}
+elseif (condition){doing part}
+elseif (condition){doing part}
+elseif (condition){doing part}
+else {doing part}
+
+
+#5
+DO {doing part
+if (condition){
+	if (condition){doing part} #
+	elseif (condition){
+		if (condition){
+			foreach ($<item> in $<collection>){<statement list>}			
+			doing part
+			} #
+		elseif (condition){doing part} #
+		doing part
+		} #
+	doing part
+	}
+elseif (condition){doing part}
+elseif (condition){doing part}
+elseif (condition){doing part}
+else {doing part}
+} 
+WHILE (condition)
+
+
+# DO-WHILE LOOP
+
+DO {doing part} WHILE (condition)
+
+
+
+
+
+# Scenario discussion
+
+DO {doing part
+	
+	if (condition){doing part}
+	elseif (condition){doing part}
+	elseif (condition){doing part}
+	elseif (condition){doing part}
+	else {doing part}
+
+} 
+WHILE (condition)
