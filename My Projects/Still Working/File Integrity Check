@@ -1,0 +1,13 @@
+<# Going to work through creating a hash reference file to later use to check file integrity. 
+    Task I plan to work through/accomplish:
+    - Create hash file reference point
+    - Check file hash/integrity script
+    - Create csv file that will contain protected (simulated) data
+    - Run script at the beginning to create file hash, make changes, and rerun hash check to verify that it has change. #>
+
+#Declare variable to file location and hash creatiion
+
+$fileLocation = "C:\GitHubRepositories\PowerShell\FileHash.txt"
+$integrityChk = Get-FileHash -Pa
+
+#Hash File Reference
