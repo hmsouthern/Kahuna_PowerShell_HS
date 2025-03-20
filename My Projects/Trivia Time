@@ -1,0 +1,103 @@
+# In-memory trivia database with multiple choice questions
+$triviaQuestions = @(
+    @{
+        Question = "What is 7 + 10?"
+        Options = @("Math?", "IDK", "17", "Come on there is only one answer and this isn't it!")
+        CorrectAnswer = "17"
+    },
+    @{
+        Question = "What's the best way to save your dad jokes?"
+        Options = @("In a pun-archive", "In a dadda-base", "On a joke-drive", "The Brain, duh!")
+        CorrectAnswer = "In a dadda-base"
+    },
+    @{
+        Question = "Why didn't the Cloud Kahunas set up their remote office from the beach?"
+        Options = @("It was too cloudy", "The Wi-Fi kept making waves", "They couldn't find a secure sandbox", "The servers kept getting salty")
+        CorrectAnswer = "It was too cloudy"
+    },
+    @{
+        Question = "What do you do when you encounter a sad xbox?"
+        Options = @("You update it's firmware", "You reboot it's feelings", "You give it extra storage", "You console it")
+        CorrectAnswer = "You console it"
+    },
+    @{
+        Question = "Why did the cloud administrator break up with the on-prem server?"
+        Options = @("Because it just couldn't scale with their needs", "Because it kept crashing under pressure", "It was unreliable-it had too much downtime", "It refused to share its resources")
+        CorrectAnswer = "Because it just couldn't scale with their needs"
+    }
+)
+
+# Prompt the user for their name
+$userName = Read-Host "Enter your name or secret identity if it tickles your fancy"
+
+Write-Host "Welcome, $userName! Hope you brought your brainpower! Don't worry, it's multiple-choice."
+
+# Initialize score counter
+$score = 0
+
+# Shuffle the questions (randomize the order)
+$shuffledQuestions = $triviaQuestions | Get-Random -Count $triviaQuestions.Count
+
+# Loop through the trivia questions
+foreach ($question in $shuffledQuestions) {
+    $validAnswer = $false
+
+    # Repeat the question until the user provides a valid answer
+    while (-not $validAnswer) {
+        # Ask the question
+        Write-Host $question.Question
+        $counter = 1
+
+        # Display the multiple choice options
+        foreach ($option in $question.Options) {
+            Write-Host "$counter. $option"
+            $counter++
+        }
+
+        # Prompt the user to select an option
+        $userAnswerIndex = Read-Host "Enter the number of your answer"
+
+        # Validate the user's input
+        if ($userAnswerIndex -ge 1 -and $userAnswerIndex -le $question.Options.Count) {
+            $userAnswer = $question.Options[$userAnswerIndex - 1]
+
+            # Check if the answer is correct
+            if ($userAnswer -eq $question.CorrectAnswer) {
+                Write-Host "Correct! You're on a roll!"
+            } else {
+                Write-Host "Oops! The correct answer was: $($question.CorrectAnswer). Better luck next time!"
+            }
+
+            # Dad joke output
+            $jokes = @(
+                "I told my coworker their password was too weak. They said 123456 is easy to remember!",
+                "I tried reading a book on network security, but I couldn't get past the first chapter.",
+                "A server is like a good friend, you don't realize how much you need it until it stops responding.",
+                "I used to be a programmer, but I couldn't find the right syntax for my life.",
+                "Working in IT is like being a magician, you make problems disappear... or at least you try to!"
+            )
+
+            # Pick a random joke and display it
+            $randomJoke = $jokes | Get-Random
+            Write-Host $randomJoke
+            Write-Host ""
+
+            # Increment score if correct
+            if ($userAnswer -eq $question.CorrectAnswer) {
+                $score++
+            }
+
+            # Mark the answer as valid (exit the loop)
+            $validAnswer = $true
+        } else {
+            Write-Host "Invalid selection. Please choose a valid option number (1 to $($question.Options.Count))."
+        }
+
+        # Output the user's score after each question
+        Write-Host "Your score is: $score"
+        Write-Host ""
+    }
+}
+
+# Final score after all questions
+Write-Host "Thanks for playing, $userName! Your final score is: $score out of $($triviaQuestions.Count)"
