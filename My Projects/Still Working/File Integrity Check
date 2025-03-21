@@ -1,13 +1,135 @@
 <# Going to work through creating a hash reference file to later use to check file integrity. 
-    Task I plan to work through/accomplish:
+    Tasks to work through/accomplish:
     - Create hash file reference point
     - Check file hash/integrity script
+    - Create a scheduled task to run the script at a set interval
     - Create csv file that will contain protected (simulated) data
     - Run script at the beginning to create file hash, make changes, and rerun hash check to verify that it has change. #>
 
+#The Hash part - Task 1 and 2
 #Declare variable to file location and hash creatiion
 
 $fileLocation = "C:\GitHubRepositories\PowerShell\FileHash.txt"
-$integrityChk = Get-FileHash -Pa
-
+$fileHash = Get-FileHash -Path $fileLocation -Algorithm SHA256
+$timeStamp = "$(Get-Date -Format "yyyy-MM-dd_HH-mm-ss"), $($fileLocation), $($fileHash.Hash)"
+$hashReference = "C:\GitHubRepositories\PowerShell\FileHashReference.txt"
+ 
 #Hash File Reference
+$timeStamp | Out-File -FilePath $hashReference -Append
+
+
+
+#Creating the csv file to simulate protected data and tracking all file changes to export to log file
+#Create a function to call later to check the hash
+#First functions is for hashing files
+function Get-FileHash {
+    param (
+        [string]$Path,
+        [string]$Algorithm = 'SHA256'
+    )
+    $hash = Get-FileHash -Path $Path -Algorithm $Algorithm
+    return $hash.Hash
+}
+
+#Second function is for hashing strings - like what you see in a csv file
+function Get-StringHash {
+    param (
+        [string]$inputString,
+        [string]$algorithm = "SHA256"
+    )
+    $hashAlgorithm = [System.Security.Cryptography.HashAlgorithm]::Create($algorithm)
+    [byte[]]$hashBytes = $hashAlgorithm.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($inputString))
+    return ($hashBytes -join "")
+}
+
+#Declare variables to files location
+
+$inputFile = "C:\GitHubRepositories\PowerShell\InputDB.csv"
+$logFile = "C:\GitHubRepositories\PowerShell\IntegrityChkDB.csv"
+
+#Check for log file and create if it does not exist
+if (-not (Test-Path -Path $logFile)) {
+    # Create the log file with headers
+    "Timestamp,EventType,RecordData,RecordHash" | Out-File -FilePath $logFile
+}
+
+#Import the input CSV file
+$fileRecord = Import-Csv -Path $inputFile
+
+$logData = @()
+foreach ($record in $fileRecord) {
+    $rowData = "$($record.fName), $($record.lName), $($record.eyeColor)"
+    $currentHash = Get-StringHash -inputString $rowData -algorithm "SHA256"
+
+    if ($currentHash -ne $record.RecordHash) {
+        $logData += [PSCustomObject]@{
+            Timestamp  = Get-Date
+            EventType  = "Change"
+            fName      = $record.fName
+            lName      = $record.lName
+            eyeColor   = $record.eyeColor
+            FileHash   = $currentHash
+        }
+    } else {
+        $logData += [PSCustomObject]@{
+            Timestamp  = Get-Date
+            EventType  = "NoChange"
+            fName      = $record.fName
+            lName      = $record.lName
+            eyeColor   = $record.eyeColor
+            FileHash   = $currentHash
+        }
+    }
+}
+
+# Export log data to CSV
+$logData | Export-Csv -Path $logFile -NoTypeInformation
+
+
+
+
+
+<#Loop through each record in the input file checking for changes, log the changes to the log file
+    foreach ( $record in $fileRecord) {
+        $rowData = "$($record.fName), $($record.lName), $($record.eyeColor)"
+        $currentHash = Get-StringHash -inputString $rowData -algorithm "SHA256"
+
+           if ($currentHash -ne $record.RecordHash){  
+                
+                    #Log the change to the log file
+                    $logRecord = "$(Get-Date), Change, $rowData, $currentHash"
+                    $logRecord | Export-Csv -Path $logFile -NoTypeInformation -Append
+    
+            }       else {
+                    #Log no change to the log file
+                    $logRecord = "$(Get-Date), NoChange, $rowData, $currentHash"
+                    $logRecord | Export-Csv -Path $logFile -NoTypeInformation -Append
+        }
+    }
+#>
+<#Define event triggers and their output for log file
+
+# Define a FileSystemWatcher object
+# Directory to monitor
+# File type to monitor currently monitors .csv files only in the directory. To monitor only one file
+$iSeeYou = New-Object System.IO.FileSystemWatcher
+$iSeeYou.Path = "C:\GitHubRepositories\PowerShell"  
+$iSeeYou.Filter = "InputDB.csv"                           
+$iSeeYou.IncludeSubdirectories = $false
+$iSeeYou.EnableRaisingEvents = $true
+
+# Event handler for 'Changed'
+$iSeeYou.Changed += {
+    $logRecord = "$(Get-Date), File Changed, $($Event.SourceEventArgs.FullPath)"
+    $logRecord | Out-File -FilePath $logFile -Append
+}
+
+# Keep the script running to monitor for changes
+Write-Output "Monitoring file changes. Press [Ctrl+C] to stop."
+while ($true) { Start-Sleep 1 }
+
+
+#End of script - this will run until you stop it with Ctrl+C.
+
+
+#Receive user input for input file in order to verify hash integrity and file changes#>
