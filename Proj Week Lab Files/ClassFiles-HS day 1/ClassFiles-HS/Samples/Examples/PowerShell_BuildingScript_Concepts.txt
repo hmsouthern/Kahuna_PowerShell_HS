@@ -1,5 +1,0 @@
-
-1.  Portable
-2.  Flexible
-3.  Repeatable
-4.  Modulear

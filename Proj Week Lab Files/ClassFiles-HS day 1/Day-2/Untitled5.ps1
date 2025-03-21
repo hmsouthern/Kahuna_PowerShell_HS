@@ -1,1 +1,0 @@
-﻿Get-Process | Select-Object -Property * | Export-Csv -Path C:\ClassFiles-HS\Export\getprocday2.csv -NoTypeInformation
